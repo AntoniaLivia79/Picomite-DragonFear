@@ -118,7 +118,7 @@ If any tile in those positions is not empty (46), the amulet gives a warning:
 
     Wall, Magic cave, Dragon, Quicksand, or Treasure nearby.
 
-🗂️ Game Flow
+## 🗂️ Game Flow
 
     Intro Screen
 
