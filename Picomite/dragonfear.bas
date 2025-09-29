@@ -50,15 +50,14 @@ PRINT
 PRINT
 PRINT playerName$; ", you are in cave "; 
 PRINT STR$(playerPos); "."
+PRINT
 
 ' show gold carried
 goldStr$ = STR$(playerGold)
-IF playerGold >= 0 THEN 
-  goldStr$ = RIGHT$(goldStr$, LEN(goldStr$) - 1)
-END IF
 IF playerGold > 0 THEN 
   PRINT "You are carrying $"; goldStr$; 
-  PRINT " worth of gold."
+  PRINT " worth of"
+  PRINT "gold."
 END IF
 
 probeIndex = 1
@@ -68,15 +67,18 @@ PRINT
 PRINT "You have"; 25 - charismaUsed; " charisma left."
 PRINT
 PRINT "What do you want to do?"
+PRINT
+COLOR RGB(YELLOW)
 PRINT "N,S,E,W - move"
 PRINT "F - fight, Q - quit"
+COLOR RGB(GREEN)
 PRINT
 
 INPUT "Your move"; action$
 action$ = UCASE$(action$)
 
 validAction = 0
-IF action$="N" OR action$="S" OR action$="E" OR action$="W" OR action$="F" OR action$="Q" THEN 
+IF action$="N" OR action$="S" OR action$="E" OR action$="W" OR action$="F"     OR action$="Q" THEN 
   validAction = 1
 END IF
 IF validAction=0 THEN GOTO InvalidMove
@@ -183,10 +185,11 @@ GOTO GameOver
 
 ' ============================
 Quicksand:
-FOR row = 1 TO 12
+FOR row = 1 TO 10
   FOR indent = 1 TO row
     PRINT " ";
   NEXT
+  COLOR RGB(MAGENTA)
   PRINT "Horrors... quicksand!"
   PAUSE delayPause/2
 NEXT
@@ -197,11 +200,13 @@ GOTO GameOver
 ' ============================
 Treasure:
 treasureValue = INT(RND * 100) + 100
-FOR row = 1 TO 12
+FOR row = 1 TO 10
   FOR indent = 1 TO row
     PRINT " ";
   NEXT
+  COLOR RGB(YELLOW)
   PRINT "Treasure!!!"
+  COLOR RGB(GREEN)
   PAUSE delayPause/2
 NEXT
 
@@ -224,7 +229,7 @@ END IF
 IF scanTile = 46 THEN RETURN
 
 AmuletFound:
-PRINT "Your amulet signals nearby ";
+PRINT "Your amulet signals nearby"
 IF scanTile = 88 THEN PRINT "wall."
 IF scanTile = 63 THEN PRINT "magic cave."
 IF scanTile = 68 THEN PRINT "dragon."
@@ -276,7 +281,9 @@ IF shotHit = 0 THEN
 END IF
 
 PRINT "Well done, "; playerName$; "!"
+PRINT
 PRINT "You hit a dragon."
+PRINT
 PAUSE delayPause
 
 IF RND > .3 THEN GOTO WoundedDragon
@@ -285,21 +292,21 @@ PRINT "You killed it!"
 caveMap(targetTile) = 46
 bonusGold = INT(RND * 100) + 100
 bonusGoldStr$ = STR$(bonusGold)
-bonusGoldStr$ = RIGHT$(bonusGoldStr$, LEN(bonusGoldStr$) - 1)
 PRINT
 PRINT "You are rewarded with $"; bonusGold; "."
 playerGold = playerGold + bonusGold
-PAUSE delayPause
+PAUSE delayPause*2
 RETURN
 
 ' ============================
 WoundedDragon:
 PRINT "But you only wounded it..."
-PAUSE delayPause
+PAUSE delayPause*2
 RETURN
 
 ' ============================
 GameOver:
+PRINT
 IF charismaUsed < 1 THEN
   PRINT "All your charisma is gone..."
   PAUSE delayPause
@@ -308,12 +315,13 @@ END IF
 
 ' ============================
 QuitGame:
+PRINT
 PRINT "You have"; 25 - charismaUsed; " charisma left."
 
 FinalScore:
 goldStr$ = STR$(playerGold)
-goldStr$ = RIGHT$(goldStr$, LEN(goldStr$) - 1)
 IF playerGold > 0 THEN 
+  COLOR RGB(YELLOW)
   PRINT "You amassed $"; goldStr$; " of gold."
 END IF
 PRINT
@@ -324,13 +332,10 @@ ShowMap:
 PRINT
 caveMap(playerPos) = 72
 FOR row = 1 TO 100
-  IF RIGHT$(STR$(row - 1), 1) = "0" THEN 
-    PRINT TAB(30);
-  END IF
   mapChar$ = CHR$(caveMap(row))
   IF mapChar$ = "X" THEN
-    PRINT CHR$(178); CHR$(178);
-    GOTO NextMap
+    PRINT "#"; "#";
+    GOTO NextMapRow
   END IF
   IF mapChar$ = "Q" THEN COLOR RGB(MAGENTA)
   IF mapChar$ = "D" THEN COLOR RGB(RED)
@@ -339,7 +344,7 @@ FOR row = 1 TO 100
   IF mapChar$ = "?" THEN COLOR RGB(PINK)
   PRINT mapChar$; " ";
   COLOR RGB(GREEN)
-NextMap:
+NextMapRow:
   IF 10 * INT(row / 10) = row THEN PRINT
 NEXT
 PAUSE delayPause
@@ -353,9 +358,8 @@ CLS
 PRINT
 COLOR RGB(MAGENTA)
 PRINT "   Welcome to Dragonfear!"
-COLOR RGB(GREEN)
-PRINT "   A game by Tim Hartnell"
 PRINT
+COLOR RGB(GREEN)
 PRINT "Explore caves, seek treasure,"
 PRINT "     and slay dragons."
 PRINT
@@ -386,11 +390,12 @@ PRINT "You start with 25 charisma."
 PRINT "Each move costs 1 charisma."
 PRINT
 PRINT "The caves are dark but sometimes"
-PRINT "you will glimpse your map. The map"
-PRINT "legend is:";
+PRINT "you will glimpse your map."
+PRINT "The map legend is:"
 COLOR RGB(YELLOW)
-PRINT " H(you), $(treasure),"
-PRINT "D(dragon), ?(magic cave), Q(quicksand)"
+PRINT "H(you), #(walls), $(treasure),"
+PRINT "D(dragon), ?(magic cave),"
+PRINT "Q(quicksand)"
 COLOR RGB(GREEN)
 PRINT
 PRINT "(Press any key)"
